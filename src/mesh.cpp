@@ -23,10 +23,10 @@
 - maintained by Bitgate, Inc. for the purpose of keeping Ogre compatible with the latest	-
 - technologies.																				-
 ---------------------------------------------------------------------------------------------
-- Copyright (c) 2011 MFG Baden-Württemberg, Innovation Agency for IT and media.             -
+- Copyright (c) 2011 MFG Baden-WÃ¼rttemberg, Innovation Agency for IT and media.             -
 - Research and Development at the Institute of Animation is a cooperation between           -
-- MFG Baden-Württemberg, Innovation Agency for IT and media and                             -
-- Filmakademie Baden-Württemberg as part of the "MFG Visual Experience Lab".                -
+- MFG Baden-WÃ¼rttemberg, Innovation Agency for IT and media and                             -
+- Filmakademie Baden-WÃ¼rttemberg as part of the "MFG Visual Experience Lab".                -
 ---------------------------------------------------------------------------------------------
 - This program is free software; you can redistribute it and/or modify it under				-
 - the terms of the GNU Lesser General Public License as published by the Free Software		-
@@ -1324,7 +1324,7 @@ namespace OgreMayaExporter
 						Ogre::VertexData* vertex_data = submesh->vertexData;		
 						const Ogre::VertexElement* tc_elem = vertex_data->vertexDeclaration->findElementBySemantic(Ogre::VES_TEXTURE_COORDINATES, 0);
 						Ogre::HardwareVertexBufferSharedPtr vbuf = vertex_data->vertexBufferBinding->getBuffer(tc_elem->getSource());
-						unsigned char* vertex = static_cast<unsigned char*>(vbuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));		       
+						unsigned char* vertex = static_cast<unsigned char*>(vbuf->lock(Ogre::HardwareBuffer::HBL_NORMAL));		       
 						float* pFloat;			
 
 						for(size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
@@ -1336,7 +1336,9 @@ namespace OgreMayaExporter
 							uvpair.second = (*pFloat);							
 							*pFloat++ = (*pFloat) * params.uvScale;
 							uv_map[submesh].push_back(uvpair);	
-						}					
+						}
+
+						vbuf->unlock();				
 					}				
 				}
 				// Finally build tangents
@@ -1351,7 +1353,7 @@ namespace OgreMayaExporter
 						Ogre::VertexData* vertex_data = submesh->vertexData;		
 						const Ogre::VertexElement* tc_elem = vertex_data->vertexDeclaration->findElementBySemantic(Ogre::VES_TEXTURE_COORDINATES, 0);
 						Ogre::HardwareVertexBufferSharedPtr vbuf = vertex_data->vertexBufferBinding->getBuffer(tc_elem->getSource());
-						unsigned char* vertex = static_cast<unsigned char*>(vbuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));			       
+						unsigned char* vertex = static_cast<unsigned char*>(vbuf->lock(Ogre::HardwareBuffer::HBL_WRITE_ONLY));			       
 						float* pFloat;			
 
 						for(size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize())
@@ -1361,6 +1363,8 @@ namespace OgreMayaExporter
 							*pFloat++ = uvpair.first;
 							*pFloat++ = uvpair.second;	
 						}
+
+						vbuf->unlock();
 					}		
 				}
 			}
